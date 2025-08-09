@@ -1,0 +1,43 @@
+encoder:
+  d_in: 1024   # input_dim
+  d_ff: 3072      # encoder block 中 FF block dim
+  hidden_dim: 1024 # classification head dim
+  number_of_layers: 3          # the number of enocder block
+  n_head:  8   # the number of multihead atten
+  dropout: 0.1
+
+hyperparam:
+  batch_size: 32
+  accum_iter: 4 # gradient_accumulation 的累積次數
+  epochs: 50
+  learning_rate: 0.00003   
+  min_learning_rate: 0.000001
+  temp: 0.1 # InfoNCE loss 中的 temp 參數
+  k: 3 # top-k 的 k number
+
+loss_weight:
+  q: 0.5
+  positive: 0.5
+
+data:
+  granularity: 4
+  seg_type: Jieba
+  with_negative_sample : True # 指的是是否會使用 hard negative sample 下去訓練模型
+  hardneg_num: 3  # 使用的 hard negative sample 數量
+
+store:
+  model_arch: dual-encoder
+  # model_arch: siamese-encoder
+  model_save_dir: checkpoint
+  exp_name: ScopeEnhancedDualEncoder
+  # exp_name: ScopeEnhancedSiameseEncoder
+  run_id_save_dir: run_ids
+
+
+strategy:
+  # train_type: base # base 即只有 contrastive learning
+  train_type: scope_enhanced # 有結合 詞義範疇預測任務
+  # pooling_method: cls
+  pooling_method: scope_aware
+
+
